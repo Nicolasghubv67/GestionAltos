@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.google.services) // Para com.google.gms.google-services
 }
 
 android {
@@ -35,10 +36,22 @@ android {
 
 dependencies {
     implementation(libs.appcompat)
-    implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    // Material
+    implementation(libs.material.v1120)
+    // Navigation Component
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
+    // ViewModel
+    implementation(libs.lifecycle.viewmodel)
+    implementation(libs.lifecycle.livedata)
+    // QR generator (solo generación)
+    implementation(libs.core)
+    // Firebase (Firestore)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore)
 }

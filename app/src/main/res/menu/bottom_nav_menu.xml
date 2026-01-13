@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/scanFragment"
+        android:title="Escanear"
+        android:icon="@android:drawable/ic_menu_camera" />
+
+    <item
+        android:id="@+id/racksFragment"
+        android:title="Racks"
+        android:icon="@android:drawable/ic_menu_sort_by_size" />
+
+    <item
+        android:id="@+id/mapFragment"
+        android:title="Mapa"
+        android:icon="@android:drawable/ic_menu_mapmode" />
+
+    <item
+        android:id="@+id/searchFragment"
+        android:title="Buscar"
+        android:icon="@android:drawable/ic_menu_search" />
+
+</menu>

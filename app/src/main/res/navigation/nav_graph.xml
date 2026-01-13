@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/scanFragment">
+
+    <fragment
+        android:id="@+id/scanFragment"
+        android:name="com.ldm.gestionaltos.ui.ScanFragment"
+        android:label="Escanear" />
+
+    <fragment
+        android:id="@+id/racksFragment"
+        android:name="com.ldm.gestionaltos.ui.RacksFragment"
+        android:label="Racks" />
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.ldm.gestionaltos.ui.MapFragment"
+        android:label="Mapa" />
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.ldm.gestionaltos.ui.SearchFragment"
+        android:label="Buscar" />
+
+    <fragment
+        android:id="@+id/createRackFragment"
+        android:name="com.ldm.gestionaltos.ui.CreateRackFragment"
+        android:label="Crear rack" />
+
+
+</navigation>
