@@ -24,6 +24,10 @@ public class ScanFragment extends Fragment {
                     .navigate(R.id.createRackFragment);
         });
 
+        v.findViewById(R.id.btnScanRack).setOnClickListener(view -> {
+            androidx.navigation.Navigation.findNavController(view).navigate(R.id.scanRackFragment);
+        });
+
         return v;
     }
 

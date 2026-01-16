@@ -3,22 +3,17 @@
 
     <item
         android:id="@+id/scanFragment"
-        android:title="Escanear"
+        android:title="@string/escanear"
         android:icon="@android:drawable/ic_menu_camera" />
 
     <item
         android:id="@+id/racksFragment"
-        android:title="Racks"
+        android:title="@string/racks"
         android:icon="@android:drawable/ic_menu_sort_by_size" />
 
     <item
-        android:id="@+id/mapFragment"
-        android:title="Mapa"
-        android:icon="@android:drawable/ic_menu_mapmode" />
-
-    <item
-        android:id="@+id/searchFragment"
-        android:title="Buscar"
-        android:icon="@android:drawable/ic_menu_search" />
+        android:id="@+id/helpFragment"
+        android:title="@string/ayuda"
+        android:icon="@android:drawable/ic_dialog_info" />
 
 </menu>

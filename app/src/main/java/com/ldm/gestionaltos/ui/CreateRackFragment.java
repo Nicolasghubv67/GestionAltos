@@ -1,26 +1,34 @@
 package com.ldm.gestionaltos.ui;
 
-import android.content.Intent;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+import android.provider.MediaStore;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.app.AlertDialog;
+import android.content.ContentValues;
+
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
+import androidx.print.PrintHelper;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.Timestamp;
+import androidx.navigation.fragment.NavHostFragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.zxing.WriterException;
@@ -28,9 +36,8 @@ import com.ldm.gestionaltos.R;
 import com.ldm.gestionaltos.model.Rack;
 import com.ldm.gestionaltos.util.QrUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,249 +49,300 @@ public class CreateRackFragment extends Fragment {
     private TextInputLayout tilRackCode;
     private TextInputEditText etRackCode;
     private ImageView ivQr;
-    private MaterialButton btnGenerate, btnSave, btnShare;
-
+    private MaterialToolbar topAppBar;
+    private MaterialButton btnGenerate, btnShare;
+    private LinearLayout layoutResult;
     private AutoCompleteTextView actSection, actAisle;
 
+    // Listas para los dropdowns
     private final List<String> sectionNames = new ArrayList<>();
-    private final Map<String, Long> sectionNameToId = new HashMap<>();
-
+    private final Map<String, String> sectionNameToId = new HashMap<>();
     private final List<String> aisleNames = new ArrayList<>();
-    private final Map<String, String> aisleNameToId = new HashMap<>();
 
-    private Long selectedSectionId = null;
+    private String selectedSectionId = null;
     private String selectedAisleId = null;
-
-
     private Bitmap lastQrBitmap;
     private String lastRackCode;
 
-    public CreateRackFragment() {
-    }
+    public CreateRackFragment() { }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_create_rack, container, false);
 
+        // Binding de vistas
         tilRackCode = v.findViewById(R.id.tilRackCode);
         etRackCode = v.findViewById(R.id.etRackCode);
         ivQr = v.findViewById(R.id.ivQr);
         btnGenerate = v.findViewById(R.id.btnGenerate);
-        btnSave = v.findViewById(R.id.btnSave);
         btnShare = v.findViewById(R.id.btnShare);
+        layoutResult = v.findViewById(R.id.layoutResult);
         actSection = v.findViewById(R.id.actSection);
         actAisle = v.findViewById(R.id.actAisle);
+        topAppBar = v.findViewById(R.id.topAppBar);
+        setupToolbar();
+
+        MaterialButton btnSave = v.findViewById(R.id.btnSave);
+        if (btnSave != null) btnSave.setVisibility(View.GONE);
+
+        // Estado inicial UI
+        layoutResult.setVisibility(View.GONE);     // no se enseña qr hasta guardar OK
+        btnShare.setEnabled(false);
+        btnShare.setText(R.string.guardar_imprimir);
 
         btnGenerate.setOnClickListener(view -> onGenerateClicked());
-        btnSave.setOnClickListener(view -> onSaveClicked());
-        btnShare.setOnClickListener(view -> onShareClicked());
+        btnShare.setOnClickListener(view -> onExportClicked());
 
         loadSections();
 
         return v;
     }
 
-    private void loadSections() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private void setupToolbar() {
+        topAppBar.setNavigationIcon(R.drawable.ic_arrow_back);
+        topAppBar.setNavigationOnClickListener(v ->
+                NavHostFragment.findNavController(this).navigateUp()
+        );
+    }
 
-        db.collection("sections")
-                .get()
+    // Ocultar la Toolbar de MainActivity al entrar, mostrarla al salir
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() != null && getActivity() instanceof AppCompatActivity) {
+            if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+                ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+            }
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (getActivity() != null && getActivity() instanceof AppCompatActivity) {
+            if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+                ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+            }
+        }
+    }
+    // ---------------------------------------
+
+    private void loadSections() {
+        FirebaseFirestore.getInstance().collection("sections").get()
                 .addOnSuccessListener(querySnapshot -> {
+                    if (!isAdded() || getContext() == null) return;
                     sectionNames.clear();
                     sectionNameToId.clear();
-
                     for (QueryDocumentSnapshot doc : querySnapshot) {
                         String name = doc.getString("name");
-                        Long numericId = doc.getLong("numericId");
-                        if (name == null || numericId == null) continue;
-
+                        if (name == null) continue;
                         sectionNames.add(name);
-                        sectionNameToId.put(name, numericId);
+                        sectionNameToId.put(name, doc.getId());
                     }
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                            requireContext(),
-                            android.R.layout.simple_list_item_1,
-                            sectionNames
-                    );
+                    Context ctx = getContext();
+                    if (!isAdded() || ctx == null) return;
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, sectionNames);
                     actSection.setAdapter(adapter);
-
-                    actSection.setOnItemClickListener((parent, view, position, id1) -> {
-                        String chosenName = sectionNames.get(position);
-                        selectedSectionId = sectionNameToId.get(chosenName);
-
-                        // reset pasillo al cambiar sección
+                    actSection.setOnItemClickListener((parent, view, position, id) -> {
+                        String name = sectionNames.get(position);
+                        selectedSectionId = sectionNameToId.get(name);
                         selectedAisleId = null;
                         actAisle.setText("", false);
                         loadAislesForSection(selectedSectionId);
                     });
-                })
-                .addOnFailureListener(e -> tilRackCode.setError("Error cargando secciones: " + e.getMessage()));
+                });
     }
 
-    private void loadAislesForSection(Long sectionId) {
+    private void loadAislesForSection(String sectionId) {
         if (sectionId == null) return;
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        db.collection("aisles")
+        FirebaseFirestore.getInstance().collection("aisles")
                 .whereEqualTo("sectionId", sectionId)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
+                    if (!isAdded() || getContext() == null) return;
                     aisleNames.clear();
-                    aisleNameToId.clear();
-
                     for (QueryDocumentSnapshot doc : querySnapshot) {
-                        String id = doc.getId();
-                        String name = doc.getString("name");
-                        if (name == null) continue;
-
+                        String name = doc.getId();
                         aisleNames.add(name);
-                        aisleNameToId.put(name, id);
                     }
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                            requireContext(),
-                            android.R.layout.simple_list_item_1,
-                            aisleNames
-                    );
+                    Context ctx = getContext();
+                    if (!isAdded() || ctx == null) return;
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, aisleNames);
                     actAisle.setAdapter(adapter);
-
-                    actAisle.setOnItemClickListener((parent, view, position, id12) -> {
-                        String chosenName = aisleNames.get(position);
-                        selectedAisleId = aisleNameToId.get(chosenName);
-                    });
-                })
-                .addOnFailureListener(e -> tilRackCode.setError("Error cargando pasillos: " + e.getMessage()));
+                    actAisle.setOnItemClickListener((parent, view, position, id) -> selectedAisleId = aisleNames.get(position));
+                });
     }
-
 
     private void onGenerateClicked() {
         tilRackCode.setError(null);
 
-        String code = etRackCode.getText() == null ? "" : etRackCode.getText().toString();
-        code = normalizeRackCode(code);
+        String code = etRackCode.getText() != null
+                ? etRackCode.getText().toString().trim().toUpperCase(Locale.ROOT)
+                : "";
 
-        String error = validateRackCode(code);
-        if (error != null) {
-            tilRackCode.setError(error);
+        if (!code.matches("^E\\d{3}$")) {
+            tilRackCode.setError("Formato inválido. Debe ser E + 3 dígitos (Ej: E105)");
             return;
         }
-        if (selectedSectionId == null) {
-            tilRackCode.setError("Selecciona una sección");
-            return;
-        }
-        if (selectedAisleId == null) {
-            tilRackCode.setError("Selecciona un pasillo");
+        if (selectedSectionId == null || selectedAisleId == null) {
+            Toast.makeText(getContext(), "Selecciona Sección y Pasillo", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Deshabilitamos mientras comprobamos
+        btnGenerate.setEnabled(false);
 
-        // El contenido del QR tiene un prefijo para que la app lo reconozca siempre.
-        // Ej: gestionaltos://rack/E340
+        // 1) COMPROBAR SI YA EXISTE EL RACK EN BBDD
+        FirebaseFirestore.getInstance()
+                .collection("racks")
+                .document(code)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (!isAdded()) return;
+
+                    if (doc.exists()) {
+                        // Ya existe: avisar y NO generar
+                        btnGenerate.setEnabled(true);
+                        Toast.makeText(getContext(),
+                                "Ese rack ya existe. Primero debes eliminarlo si quieres regenerar el QR.",
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    // 2) Si NO existe, generamos
+                    generateQrAndContinueSave(code);
+
+                })
+                .addOnFailureListener(e -> {
+                    if (!isAdded()) return;
+                    btnGenerate.setEnabled(true);
+                    Toast.makeText(getContext(), "Error consultando BBDD: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void generateQrAndContinueSave(String code) {
         String qrContent = "gestionaltos://rack/" + code;
 
         try {
-            lastQrBitmap = QrUtils.generateQrBitmap(qrContent, 900);
-            ivQr.setImageBitmap(lastQrBitmap);
-
+            // Generar QR
+            Bitmap qr = QrUtils.generateQrBitmap(qrContent, 1000);
+            lastQrBitmap = buildQrBitmapWithRackCode(qr, code);
             lastRackCode = code;
-            btnSave.setEnabled(true);
-            btnShare.setEnabled(true);
+
+            // Guardar automáticamente en Firestore
+            Rack rack = new Rack(lastRackCode, selectedSectionId, selectedAisleId);
+
+            FirebaseFirestore.getInstance()
+                    .collection("racks")
+                    .document(rack.id)
+                    .set(rack)
+                    .addOnSuccessListener(v -> {
+                        if (!isAdded()) return;
+
+                        Toast.makeText(getContext(), "✅ Rack guardado correctamente", Toast.LENGTH_SHORT).show();
+
+                        // Mostrar resultado solo si guardado OK
+                        ivQr.setImageBitmap(lastQrBitmap);
+                        layoutResult.setVisibility(View.VISIBLE);
+
+                        btnShare.setEnabled(true);
+                        btnShare.setText(R.string.guardar_imprimir);
+                        tilRackCode.setHelperText("✅ Registrado en sistema");
+
+                        btnGenerate.setEnabled(true);
+                    })
+                    .addOnFailureListener(e -> {
+                        if (!isAdded()) return;
+
+                        btnGenerate.setEnabled(true);
+                        layoutResult.setVisibility(View.GONE);
+
+                        tilRackCode.setError("Error guardando en BBDD: " + e.getMessage());
+                        Toast.makeText(getContext(), "❌ No se pudo guardar el rack", Toast.LENGTH_SHORT).show();
+                    });
 
         } catch (WriterException e) {
-            tilRackCode.setError("No se pudo generar el QR");
+            btnGenerate.setEnabled(true);
+            tilRackCode.setError("Error generando QR");
+        } finally {
+            btnGenerate.setEnabled(true);
         }
     }
 
-    private void onSaveClicked() {
-        if (lastRackCode == null) return;
-        if (selectedSectionId == null || selectedAisleId == null) return;
+    // Menú de opciones
+    private void onExportClicked() {
+        if (lastQrBitmap == null) return;
 
-        Rack rack = new Rack();
-        rack.id = lastRackCode;
-        rack.code = lastRackCode;
+        String[] options = {"Guardar en Galería", "Imprimir"};
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        db.collection("racks")
-                .document(rack.id)
-                .set(new RackDoc(rack.code, selectedSectionId, selectedAisleId, Timestamp.now()))
-                .addOnSuccessListener(unused -> {
-                    // mejorar feedback
-                    tilRackCode.setError(null);
-                    tilRackCode.setHelperText("Guardado en Firestore ✅");
+        new AlertDialog.Builder(requireContext())
+                .setTitle("QR " + lastRackCode)
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        saveToGallery();
+                    } else {
+                        printQr();
+                    }
                 })
-                .addOnFailureListener(e -> tilRackCode.setError("Error guardando: " + e.getMessage()));
+                .show();
     }
 
-    private void onShareClicked() {
-        if (lastQrBitmap == null || lastRackCode == null) return;
+    // Opción 1: Guardar en Galería (Fotos)
+    private void saveToGallery() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, "QR_" + lastRackCode);
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/GestionAltos");
 
+        Uri uri = requireContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
         try {
-            Uri uri = saveBitmapToCacheAndGetUri(lastQrBitmap, "QR_" + lastRackCode + ".png");
-
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("image/png");
-            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            startActivity(Intent.createChooser(shareIntent, "Compartir QR"));
-
+            if (uri != null) {
+                OutputStream out = requireContext().getContentResolver().openOutputStream(uri);
+                assert out != null;
+                lastQrBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                out.close();
+                Toast.makeText(getContext(), "Guardado en Galería", Toast.LENGTH_SHORT).show();
+            }
         } catch (IOException e) {
-            tilRackCode.setError("Error exportando: " + e.getMessage());
+            Toast.makeText(getContext(), "Error guardando", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private String normalizeRackCode(String input) {
-        if (input == null) return "";
-        return input.trim().toUpperCase(Locale.ROOT);
+    // Opción 2: Imprimir (Usa el servicio de impresión de Android)
+    private void printQr() {
+        PrintHelper photoPrinter = new PrintHelper(requireContext());
+        photoPrinter.setScaleMode(PrintHelper.SCALE_MODE_FIT);
+        photoPrinter.printBitmap("QR_" + lastRackCode, lastQrBitmap);
     }
 
-    // Reglas: "E" + 3 dígitos (E000..E999).
-    private String validateRackCode(String code) {
-        if (TextUtils.isEmpty(code)) return "Introduce un código (E###)";
-        if (!code.matches("^E\\d{3}$")) return "Formato inválido. Ejemplo: E340";
-        return null;
-    }
+    private Bitmap buildQrBitmapWithRackCode(Bitmap qrBitmap, String rackCode) {
 
-    // Guarda png en cache y devuelve content:// uri vía FileProvider
-    private Uri saveBitmapToCacheAndGetUri(Bitmap bitmap, String fileName) throws IOException {
-        File cacheDir = new File(requireContext().getCacheDir(), "shared_qr");
-        if (!cacheDir.exists()) cacheDir.mkdirs();
+        int extraHeight = 220;
 
-        File file = new File(cacheDir, fileName);
-        FileOutputStream fos = new FileOutputStream(file);
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-        fos.flush();
-        fos.close();
-
-        return FileProvider.getUriForFile(
-                requireContext(),
-                requireContext().getPackageName() + ".fileprovider",
-                file
+        Bitmap out = Bitmap.createBitmap(
+                qrBitmap.getWidth(),
+                qrBitmap.getHeight() + extraHeight,
+                Bitmap.Config.ARGB_8888
         );
-    }
 
-    // Documento para Firestore
-    public static class RackDoc {
-        public String code;
-        public Long sectionId;
-        public String aisleId;
-        public Timestamp createdAt;
+        Canvas canvas = new Canvas(out);
+        canvas.drawColor(Color.WHITE);
 
-        public RackDoc() {
-        }
+        // Dibuja el QR arriba
+        canvas.drawBitmap(qrBitmap, 0, 0, null);
 
-        public RackDoc(String code, Long sectionId, String aisleId, Timestamp createdAt) {
-            this.code = code;
-            this.sectionId = sectionId;
-            this.aisleId = aisleId;
-            this.createdAt = createdAt;
-        }
+        // Texto grande centrado abajo
+        android.graphics.Paint paint = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+        paint.setColor(Color.BLACK);
+        paint.setTextAlign(android.graphics.Paint.Align.CENTER);
+        paint.setFakeBoldText(true);
+        paint.setTextSize(120f);
+
+        float x = out.getWidth() / 2f;
+        float y = qrBitmap.getHeight() + (extraHeight / 2f) + 40;
+
+        canvas.drawText(rackCode, x, y, paint);
+        return out;
     }
 
 }

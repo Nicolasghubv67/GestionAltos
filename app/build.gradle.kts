@@ -38,6 +38,8 @@ dependencies {
     implementation(libs.appcompat)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.androidx.print)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -54,4 +56,12 @@ dependencies {
     // Firebase (Firestore)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore)
+    // ML Kit barcode scanning
+    implementation(libs.mlkit.barcode.scanning)
+    // CameraX
+    implementation(libs.camera.core)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.guava)
 }

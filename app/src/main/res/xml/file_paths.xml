@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-    <cache-path
-        name="cache"
-        path="." />
+    <cache-path name="mis_qrs" path="shared_qr/" />
+
+    <cache-path name="mis_pdfs" path="." />
 </paths>

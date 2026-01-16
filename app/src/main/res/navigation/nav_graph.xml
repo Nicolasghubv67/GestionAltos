@@ -15,19 +15,29 @@
         android:label="Racks" />
 
     <fragment
-        android:id="@+id/mapFragment"
-        android:name="com.ldm.gestionaltos.ui.MapFragment"
-        android:label="Mapa" />
-
-    <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.ldm.gestionaltos.ui.SearchFragment"
-        android:label="Buscar" />
+        android:id="@+id/helpFragment"
+        android:name="com.ldm.gestionaltos.ui.HelpFragment"
+        android:label="Ayuda" />
 
     <fragment
         android:id="@+id/createRackFragment"
         android:name="com.ldm.gestionaltos.ui.CreateRackFragment"
         android:label="Crear rack" />
-
+    <fragment
+        android:id="@+id/rackDetailFragment"
+        android:name="com.ldm.gestionaltos.ui.RackDetailFragment"
+        android:label="Rack">
+        <argument
+            android:name="rackId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/scanRackFragment"
+        android:name="com.ldm.gestionaltos.ui.ScanRackFragment"
+        android:label="Escanear rack" />
+    <fragment
+        android:id="@+id/scanProductFragment"
+        android:name="com.ldm.gestionaltos.ui.ScanProductFragment"
+        android:label="Escanear producto" />
 
 </navigation>

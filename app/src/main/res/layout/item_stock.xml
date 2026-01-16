@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginVertical="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvQty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/_50"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/design_default_color_primary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/tvUd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ud"
+            android:textSize="12sp"
+            android:layout_marginTop="-4dp"
+            app:layout_constraintTop_toBottomOf="@id/tvQty"
+            app:layout_constraintStart_toStartOf="@id/tvQty"
+            app:layout_constraintEnd_toEndOf="@id/tvQty"/>
+
+        <ImageButton
+            android:id="@+id/btnRemove"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/quitar_del_rack"
+            android:src="@android:drawable/ic_delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/design_default_color_primary" />
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/nombre_del_producto"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintStart_toEndOf="@id/tvQty"
+            app:layout_constraintEnd_toStartOf="@id/btnRemove"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <!-- Fila EAN: + código -->
+        <TextView
+            android:id="@+id/tvBarcodeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ean"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#757575"
+            android:layout_marginTop="6dp"
+            app:layout_constraintStart_toStartOf="@id/tvName"
+            app:layout_constraintTop_toBottomOf="@id/tvName"/>
+
+        <TextView
+            android:id="@+id/tvBarcode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/_84350000000"
+            android:textSize="12sp"
+            android:textColor="#757575"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="6dp"
+            app:layout_constraintStart_toEndOf="@id/tvBarcodeLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvName"/>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="#EEEEEE"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="@id/tvName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvBarcode"/>
+
+        <TextView
+            android:id="@+id/tvEditHint"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/toca_para_editar"
+            android:textSize="12sp"
+            android:textColor="@color/design_default_color_primary"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@id/tvName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider"/>
+
+        <!-- Para que el layout “cierre” bien por abajo -->
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/bottomBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="tvUd,btnRemove,tvEditHint"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/bottomBarrier"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
