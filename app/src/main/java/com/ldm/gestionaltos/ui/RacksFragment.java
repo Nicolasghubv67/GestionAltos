@@ -14,7 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
@@ -26,9 +25,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import com.ldm.gestionaltos.R;
-
 import com.ldm.gestionaltos.model.StockItem;
 
 import java.util.ArrayList;
@@ -235,13 +232,11 @@ public class RacksFragment extends Fragment {
                         if (item == null || item.rackId == null) continue;
 
                         String name = item.productName != null ? item.productName.toLowerCase(Locale.ROOT) : "";
-                        String internal = item.productInternalId != null ? item.productInternalId.toLowerCase(Locale.ROOT) : "";
                         String ref = item.productReference != null ? item.productReference.toLowerCase(Locale.ROOT) : "";
                         String barcode = item.productId != null ? item.productId : "";
 
                         boolean match =
                                 name.contains(qLower) ||
-                                        internal.contains(qLower) ||
                                         ref.contains(qLower) ||
                                         barcode.contains(qLower);
 
@@ -261,14 +256,13 @@ public class RacksFragment extends Fragment {
      */
     private String buildMatchInfo(StockItem item, String qLower) {
         String name = item.productName != null ? item.productName : "";
-        String internal = item.productInternalId != null ? item.productInternalId.toLowerCase(Locale.ROOT) : "";
         String ref = item.productReference != null ? item.productReference.toLowerCase(Locale.ROOT) : "";
         String barcode = item.productId != null ? item.productId : "";
 
         if (!name.isEmpty() && name.toLowerCase(Locale.ROOT).contains(qLower)) {
             return "Producto: " + name;
         }
-        if ((!internal.isEmpty() && internal.contains(qLower)) || (!ref.isEmpty() && ref.contains(qLower))) {
+        if ((!ref.isEmpty() && ref.contains(qLower))) {
             return "Coincide referencia";
         }
         if (!barcode.isEmpty() && barcode.contains(qLower)) {

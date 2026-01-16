@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:text="@string/selecciona_una_acci_n_para_continuar"
         android:textSize="16sp"
-        android:textColor="#757575"
+        android:textColor="#565656"
         android:layout_marginBottom="24dp"/>
 
     <com.google.android.material.card.MaterialCardView
@@ -46,6 +46,7 @@
             <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:contentDescription="@string/escanear_rack"
                 android:src="@android:drawable/ic_menu_camera"
                 app:tint="@color/white"/>
 
@@ -94,6 +95,7 @@
             <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:contentDescription="@string/generar_qr"
                 android:src="@android:drawable/ic_input_add"
                 app:tint="#616161"/>
 

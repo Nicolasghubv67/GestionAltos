@@ -16,7 +16,7 @@
             android:id="@+id/tvHelpTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ayuda"
+            android:text="@string/ayuda"
             android:textSize="26sp"
             android:textStyle="bold"
             android:textColor="@color/black" />
@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Guía rápida para gestionar racks y stock en altos."
+            android:text="@string/gu_a_r_pida_para_gestionar_racks_y_stock_en_altos"
             android:textColor="#757575" />
 
         <!-- Atajos -->
@@ -46,7 +46,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Atajos"
+                    android:text="@string/atajos"
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:textColor="@color/black" />
@@ -63,7 +63,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Escanear"
+                        android:text="@string/escanear"
                         app:icon="@android:drawable/ic_menu_camera"
                         app:iconPadding="8dp"/>
 
@@ -74,7 +74,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="10dp"
-                        android:text="Racks"
+                        android:text="@string/racks"
                         app:icon="@android:drawable/ic_menu_sort_by_size"
                         app:iconPadding="8dp"/>
                 </LinearLayout>
@@ -85,7 +85,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Crear rack (QR)"
+                    android:text="@string/crear_rack_qr"
                     app:icon="@android:drawable/ic_input_add"
                     app:iconPadding="8dp"/>
             </LinearLayout>
@@ -108,7 +108,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Primeros pasos"
+                    android:text="@string/primeros_pasos"
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:textColor="@color/black" />
@@ -117,7 +117,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="1) Crea un rack (E123) seleccionando Sección y Pasillo.\n2) Genera el QR y guárdalo en el sistema.\n3) Imprime o guarda el QR en galería.\n4) Escanea el rack para abrir su detalle y empezar a añadir stock."
+                    android:text="@string/ayuda_primeros_pasos"
                     android:textColor="#616161"
                     android:lineSpacingExtra="2dp"/>
             </LinearLayout>
@@ -140,7 +140,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Racks"
+                    android:text="@string/racks"
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:textColor="@color/black" />
@@ -149,7 +149,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="• Búsqueda por rack: escribe E (ej: E032).\n• Búsqueda por EAN: exacto (8+ dígitos) o parcial (pocos dígitos).\n• También puedes buscar por nombre o referencia interna.\n• En el listado verás si el rack está vacío o cuántos productos contiene."
+                    android:text="@string/ayuda_racks"
                     android:textColor="#616161"
                     android:lineSpacingExtra="2dp"/>
             </LinearLayout>
@@ -172,7 +172,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Productos y stock"
+                    android:text="@string/productos_y_stock"
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:textColor="@color/black" />
@@ -181,7 +181,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="• En el detalle del rack puedes añadir un producto escaneando su EAN.\n• Si existe en catálogo, se precarga nombre y referencia.\n• Puedes editar nombre/referencia/cantidad.\n• El EAN se usa como identificador: no se cambia en edición."
+                    android:text="@string/ayuda_productos_y_stock"
                     android:textColor="#616161"
                     android:lineSpacingExtra="2dp"/>
             </LinearLayout>
@@ -205,7 +205,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Problemas típicos"
+                    android:text="@string/problemas_t_picos"
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:textColor="@color/black" />
@@ -214,7 +214,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="• No aparece un rack al buscar: prueba con E + 3 dígitos (E105).\n• No encuentra por EAN parcial: prueba con más dígitos o con el EAN completo.\n• Si un QR no se genera: revisa que el rack no exista ya.\n• Si un dropdown no carga: revisa conexión y que existan Secciones/Pasillos."
+                    android:text="@string/ayuda_problemas_tipicos"
                     android:textColor="#616161"
                     android:lineSpacingExtra="2dp"/>
             </LinearLayout>

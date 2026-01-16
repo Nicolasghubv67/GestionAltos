@@ -6,16 +6,16 @@ public class Product {
     @DocumentId
     public String barcode; // ID del documento EAN13
 
-    public String internalId;
+    public String reference;
 
     public String name;
     public String searchName;
 
     public Product() {}
 
-    public Product(String barcode, String internalId, String name) {
+    public Product(String barcode, String reference, String name) {
         this.barcode = barcode;
-        this.internalId = internalId;
+        this.reference = reference;
         this.name = name;
         this.searchName = name != null ? name.toLowerCase() : "";
     }

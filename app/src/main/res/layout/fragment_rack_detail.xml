@@ -96,9 +96,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="@android:drawable/ic_input_add"
+        app:srcCompat="@android:drawable/ic_input_add"
         app:backgroundTint="@color/design_default_color_primary"
         app:tint="@color/white"
-        android:contentDescription="@string/a_adir_producto" />
+        android:contentDescription="@string/anadir_producto"
+        android:importantForAccessibility="yes" />
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,7 +1,6 @@
 package com.ldm.gestionaltos.model;
 
 import com.google.firebase.firestore.DocumentId;
-import com.google.type.Date;
 
 public class Rack {
     @DocumentId

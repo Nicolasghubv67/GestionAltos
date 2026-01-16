@@ -19,14 +19,10 @@ public class ScanFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_scan, container, false);
 
-        v.findViewById(R.id.btnGoCreateRack).setOnClickListener(view -> {
-            androidx.navigation.Navigation.findNavController(view)
-                    .navigate(R.id.createRackFragment);
-        });
+        v.findViewById(R.id.btnGoCreateRack).setOnClickListener(view -> androidx.navigation.Navigation.findNavController(view)
+                .navigate(R.id.createRackFragment));
 
-        v.findViewById(R.id.btnScanRack).setOnClickListener(view -> {
-            androidx.navigation.Navigation.findNavController(view).navigate(R.id.scanRackFragment);
-        });
+        v.findViewById(R.id.btnScanRack).setOnClickListener(view -> androidx.navigation.Navigation.findNavController(view).navigate(R.id.scanRackFragment));
 
         return v;
     }

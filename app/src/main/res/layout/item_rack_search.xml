@@ -61,7 +61,7 @@
                         android:layout_weight="1"
                         android:text="@string/secci_n_cer_mica"
                         android:textSize="14sp"
-                        android:textColor="#757575"/>
+                        android:textColor="#5B5A5A" />
 
                     <!-- Badge estado rack -->
                     <com.google.android.material.textview.MaterialTextView
@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/pincha_en_rack"
                 android:src="@android:drawable/ic_media_play"
-                app:tint="#BDBDBD"/>
+                app:tint="#5D5D5D" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -3,10 +3,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="eliminar">Eliminar</string>
-    <string name="a_adir_producto">Añadir producto</string>
+    <string name="anadir_producto">Añadir producto</string>
     <string name="descripcion_rack_vacio">Este rack está vacío.\nUsa el botón + para añadir stock.</string>
     <string name="gesti_n_de_racks">Gestión de Racks</string>
-    <string name="buscar_producto_referencia_o_rack">Buscar producto, referencia o rack...</string>
+    <string name="buscar_producto_referencia_o_rack">Buscar producto, referencia o rack…</string>
     <string name="no_se_encontraron_resultados">No se encontraron resultados</string>
     <string name="selecciona_una_acci_n_para_continuar">Selecciona una acción para continuar</string>
     <string name="escanear_rack">Escanear Rack</string>
@@ -36,4 +36,23 @@
     <string name="ayuda">Ayuda</string>
     <string name="racks">Racks</string>
     <string name="escanear">Escanear</string>
+    <string name="problemas_t_picos">Problemas típicos</string>
+    <string name="ayuda_problemas_tipicos">• No aparece un rack al buscar: prueba con E + 3 dígitos (E105).\n• No encuentra por EAN parcial: prueba con más dígitos o con el EAN completo.\n• Si un QR no se genera: revisa que el rack no exista ya.\n• Si un dropdown no carga: revisa tu conexión a internet.</string>
+    <string name="ayuda_productos_y_stock">• En el detalle del rack puedes añadir un producto escaneando su EAN.\n• Si existe en catálogo, se precarga nombre y referencia.\n• Puedes editar nombre/referencia/cantidad.\n• El EAN se usa como identificador: no se cambia en edición.</string>
+    <string name="productos_y_stock">Productos y stock</string>
+    <string name="ayuda_racks">• Búsqueda por rack: escribe E (ej: E032).\n• Búsqueda por EAN: exacto (8+ dígitos) o parcial (pocos dígitos).\n• También puedes buscar por nombre o referencia interna.\n• En el listado verás si el rack está vacío o cuántos productos contiene.</string>
+    <string name="ubicaci_n_y_c_digo">Ubicación y Código</string>
+    <string name="c_digo_ej_e340">Código (Ej: E340)</string>
+    <string name="secci_n">Sección</string>
+    <string name="pasillo">Pasillo</string>
+    <string name="generar_c_digo_qr">Generar Código QR</string>
+    <string name="confirmar_y_guardar">Confirmar y Guardar</string>
+    <string name="compartir_imagen">Compartir Imagen</string>
+    <string name="qr_generado">QR Generado</string>
+    <string name="crear_rack_qr">Crear rack (QR)</string>
+    <string name="primeros_pasos">Primeros pasos</string>
+    <string name="atajos">Atajos</string>
+    <string name="ayuda_primeros_pasos">1) Crea un rack (E123) seleccionando Sección y Pasillo.\n2) Genera el QR y guárdalo en el sistema.\n3) Imprime o guarda el QR en galería.\n4) Escanea el rack para abrir su detalle y empezar a añadir stock.</string>
+    <string name="gu_a_r_pida_para_gestionar_racks_y_stock_en_altos">Guía rápida para gestionar racks y stock en altos.</string>
+    <string name="generar_qr">Generar QR</string>
 </resources>

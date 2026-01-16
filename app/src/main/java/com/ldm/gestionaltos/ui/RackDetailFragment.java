@@ -84,7 +84,7 @@ public class RackDetailFragment extends Fragment {
     }
 
     private void setupToolbar() {
-        topAppBar.setNavigationIcon(R.drawable.ic_arrow_back_white);
+        topAppBar.setNavigationIcon(R.drawable.ic_arrow_back);
         topAppBar.setNavigationOnClickListener(v ->
                 NavHostFragment.findNavController(this).navigateUp()
         );
@@ -144,8 +144,8 @@ public class RackDetailFragment extends Fragment {
         final EditText etInternal = new EditText(requireContext());
         etInternal.setHint("Referencia interna");
         String internalPrefill = "";
-        if (p.internalId != null && !p.internalId.isEmpty()) {
-            internalPrefill = p.internalId;
+        if (p.reference != null && !p.reference.isEmpty()) {
+            internalPrefill = p.reference;
         }
         etInternal.setText(internalPrefill);
         layout.addView(etInternal);
@@ -209,16 +209,12 @@ public class RackDetailFragment extends Fragment {
                                     db.collection("stock").document(ds.getId()).update(
                                             "qty", current + qtyToAdd,
                                             "productName", prod.name,
-                                            "productInternalId", prod.internalId,
-                                            "productReference", prod.internalId, // mantenemos ambos
+                                            "productReference", prod.reference,
                                             "searchName", (prod.name != null ? prod.name.toLowerCase() : "")
                                     );
                                 } else {
                                     // NO EXISTE -> crear nuevo stock
-                                    StockItem newItem = new StockItem(
-                                            rackId, prod.barcode, qtyToAdd,
-                                            prod.name, prod.internalId, prod.internalId
-                                    );
+                                    StockItem newItem = new StockItem(rackId, prod.barcode, qtyToAdd, prod.name, prod.reference);
                                     db.collection("stock").add(newItem);
                                 }
                             });
@@ -241,8 +237,7 @@ public class RackDetailFragment extends Fragment {
                         db.collection("stock").document(editingItem.id).update(
                                 "qty", newQty,
                                 "productName", prod.name,
-                                "productInternalId", prod.internalId,
-                                "productReference", prod.internalId,
+                                "productReference", prod.reference,
                                 "searchName", (prod.name != null ? prod.name.toLowerCase() : ""),
                                 "productId", newBarcode
                         );
@@ -267,8 +262,7 @@ public class RackDetailFragment extends Fragment {
                                     db.collection("stock").document(ds.getId()).update(
                                             "qty", current + newQty,
                                             "productName", prod.name,
-                                            "productInternalId", prod.internalId,
-                                            "productReference", prod.internalId,
+                                            "productReference", prod.reference,
                                             "searchName", (prod.name != null ? prod.name.toLowerCase() : "")
                                     ).addOnSuccessListener(x -> db.collection("stock").document(editingItem.id).delete());
 
@@ -278,8 +272,7 @@ public class RackDetailFragment extends Fragment {
                                             "productId", newBarcode,
                                             "qty", newQty,
                                             "productName", prod.name,
-                                            "productInternalId", prod.internalId,
-                                            "productReference", prod.internalId,
+                                            "productReference", prod.reference,
                                             "searchName", (prod.name != null ? prod.name.toLowerCase() : "")
                                     );
                                 }
@@ -342,7 +335,7 @@ public class RackDetailFragment extends Fragment {
 
 
     private void showEditDialog(StockItem item) {
-        Product p = new Product(item.productId, item.productInternalId, item.productName);
+        Product p = new Product(item.productId, item.productReference, item.productName);
         showAddOrEditStockDialog(p, true, item);
     }
 
@@ -376,7 +369,9 @@ public class RackDetailFragment extends Fragment {
                             .addOnSuccessListener(v -> {
                                 if (!isAdded()) return;
                                 Toast.makeText(getContext(), "Rack eliminado", Toast.LENGTH_SHORT).show();
-                                requireActivity().onBackPressed();
+                                requireActivity()
+                                        .getOnBackPressedDispatcher()
+                                        .onBackPressed();
                             })
                             .addOnFailureListener(e ->
                                     Toast.makeText(getContext(), "Error eliminando: " + e.getMessage(), Toast.LENGTH_SHORT).show()
